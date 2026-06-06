@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>День 1 — твои боты JUPITER + URAN · Wayan Onchain</title>
+<style>
+  :root{
+    --bg:#0e0f13; --card:#16181f; --card2:#1c1f28; --line:rgba(255,255,255,.08);
+    --text:#e8e9ee; --muted:#9aa0ad; --accent:#7c5cff; --accent2:#19c8a5;
+    --code:#0a0b0f; --ok:#19c8a5; --warn:#ffb454; --err:#ff6b6b;
+  }
+  [data-theme="light"]{
+    --bg:#f6f7f9; --card:#ffffff; --card2:#f1f2f6; --line:rgba(0,0,0,.08);
+    --text:#1b1d24; --muted:#5b616e; --code:#0f1117;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;font-size:17px}
+  .progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;z-index:100}
+  header.top{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);
+    background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--line)}
+  .top .wrap{max-width:1100px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+  .brand{font-weight:700;letter-spacing:.3px}
+  .brand b{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tbtn{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--text);
+    border-radius:10px;padding:7px 12px;font-size:14px}
+  .layout{max-width:1100px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:240px 1fr;gap:32px}
+  nav.side{position:sticky;top:70px;align-self:start;height:max-content;padding:18px 0;font-size:15px}
+  nav.side a{display:block;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:8px;border-left:2px solid transparent}
+  nav.side a.active{color:var(--text);background:var(--card);border-left-color:var(--accent)}
+  main{padding:18px 0 80px}
+  .hero{padding:54px 0 30px}
+  .hero h1{font-size:42px;line-height:1.15;margin:0 0 14px}
+  .hero h1 b{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--muted);font-size:19px;max-width:680px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}
+  .chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:14px;color:var(--muted)}
+  .agents{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  .agent{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .agent .emo{font-size:30px}
+  .agent h3{margin:8px 0 6px}
+  .agent p{color:var(--muted);margin:0;font-size:15px}
+  section.step{padding:30px 0;border-top:1px solid var(--line)}
+  .step-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+  .step-num{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+    font-weight:700;font-size:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+  .step-head h2{margin:0;font-size:24px}
+  .lead{color:var(--muted);margin:.2em 0 1em}
+  .code{background:var(--code);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:14px 0}
+  .code .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03)}
+  .code .lbl{font-size:12px;color:var(--muted);letter-spacing:.5px}
+  .copy{cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:4px 10px;font-size:12px}
+  .copy:hover{color:var(--text)}
+  pre{margin:0;padding:14px 16px;overflow:auto}
+  code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:14.5px}
+  .c-cmd{color:#a9b7ff}
+  .c-com{color:#6c7280}
+  .inline{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--card2);padding:2px 6px;border-radius:6px;font-size:14px}
+  .callout{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:13px 15px;margin:14px 0}
+  .callout.tip{border-left-color:var(--accent2)} .callout.warn{border-left-color:var(--warn)} .callout.err{border-left-color:var(--err)}
+  .callout .ic{font-size:20px;flex:none}
+  .callout p{margin:0;font-size:15px;color:var(--text)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600}
+  .plain{color:var(--muted);font-size:15px;margin:.3em 0}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:14px;text-align:center}
+  footer a{color:var(--accent)}
+  @media(max-width:840px){.layout{grid-template-columns:1fr}nav.side{display:none}.hero h1{font-size:32px}.agents{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Wayan <b>Onchain</b> · День 1</div>
+    <button class="tbtn" id="theme">☀️ / 🌙</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="side" id="nav">
+    <a href="#intro">Что это</a>
+    <a href="#need">Что нужно</a>
+    <a href="#s0">0 · Зайти на сервер</a>
+    <a href="#s1">1 · Скачать репозиторий</a>
+    <a href="#s2">2 · Поставить JUPITER</a>
+    <a href="#s3">3 · Поставить URAN</a>
+    <a href="#s4">4 · Войти в Claude</a>
+    <a href="#s5">5 · Связать агентов</a>
+    <a href="#s6">6 · Telegram-боты</a>
+    <a href="#s7">7 · Проверка</a>
+    <a href="#after">Дальше</a>
+    <a href="#trouble">Если что-то не так</a>
+  </nav>
+
+  <main>
+    <section class="hero" id="intro">
+      <h1>Твои боты: <b>JUPITER + URAN</b></h1>
+      <p>За один вечер ты поднимаешь на сервере двух цифровых сотрудников. Они работают
+         круглосуточно и слушаются тебя прямо из Telegram — с телефона, ноута, откуда угодно.
+         Программистом быть не нужно: копируешь команды по одной и нажимаешь Enter.</p>
+      <div class="chips">
+        <span class="chip">⏱ ~15 минут</span>
+        <span class="chip">🤖 2 агента</span>
+        <span class="chip">📱 управление из Telegram</span>
+        <span class="chip">🧑‍💻 без навыков кода</span>
+      </div>
+      <div class="agents">
+        <div class="agent"><div class="emo">🪐</div><h3>JUPITER — оператор</h3>
+          <p>Твой главный бот. Разговаривает с тобой, понимает задачу и решает: сделать сам или поручить URAN.</p></div>
+        <div class="agent"><div class="emo">☄️</div><h3>URAN — исполнитель</h3>
+          <p>Рабочие руки. Пишет код, делает документы, ищет информацию, автоматизирует.</p></div>
+      </div>
+      <div class="callout tip"><span class="ic">🧭</span><p>Принцип Wayan: <b>тишина = баг</b>. Ты всегда видишь, что делает агент. И ничего важного — без твоего «ок».</p></div>
+    </section>
+
+    <section class="step" id="need">
+      <div class="step-head"><div class="step-num">✓</div><h2>Что нужно подготовить</h2></div>
+      <table>
+        <tr><th>Что</th><th>Зачем</th></tr>
+        <tr><td>Сервер (VPS) с <b>Ubuntu 22.04 или 24.04</b></td><td>там будут жить боты 24/7</td></tr>
+        <tr><td>Доступ к серверу по <b>SSH</b> (логин root + IP)</td><td>чтобы вводить команды</td></tr>
+        <tr><td>Подписка <b>Anthropic</b> (Claude Pro / Max)</td><td>мозги ботов</td></tr>
+        <tr><td><b>Telegram</b> + 2 бота от <a href="https://t.me/BotFather">@BotFather</a></td><td>чтобы писать ботам</td></tr>
+      </table>
+      <p class="plain">VPS можно арендовать за пару долларов в месяц. При заказе выбери «Ubuntu 22.04». Провайдер пришлёт IP, логин <span class="inline">root</span> и пароль.</p>
+    </section>
+
+    <section class="step" id="s0">
+      <div class="step-head"><div class="step-num">0</div><h2>Зайти на сервер</h2></div>
+      <p class="lead">Открой «Терминал» (на Mac/Linux он встроен; на Windows — приложение «PowerShell» или «Terminal»). Вставь команду, заменив <span class="inline">ТВОЙ_IP</span> на IP сервера от провайдера:</p>
+      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">ssh</span> root@ТВОЙ_IP</code></pre></div>
+      <p class="plain">Спросит пароль — введи (символы не отображаются, это нормально), нажми Enter. Готово, ты «внутри» сервера.</p>
+    </section>
+
+    <section class="step" id="s1">
+      <div class="step-head"><div class="step-num">1</div><h2>Скачать репозиторий</h2></div>
+      <p class="lead">Скачиваем готовую систему с гита Wayan Onchain. Скопируй весь блок целиком и вставь:</p>
+      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">apt-get</span> update && <span class="c-cmd">apt-get</span> install -y git
+<span class="c-cmd">git</span> clone https://github.com/wayanonchain/Claude.git
+<span class="c-cmd">cd</span> Claude</code></pre></div>
+      <div class="callout tip"><span class="ic">📌</span><p>Это <b>тот самый</b> репозиторий. Создавать свой не нужно — ставишь прямо отсюда. Обновления потом прилетают сами командой <span class="inline">jupiter-update</span>.</p></div>
+    </section>
+
+    <section class="step" id="s2">
+      <div class="step-head"><div class="step-num">2</div><h2>Поставить JUPITER (оператор)</h2></div>
+      <p class="lead">Одна команда — установщик сам сделает всё: создаст бота, поставит «движок», настроит роль.</p>
+      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">sudo</span> AGENT=jupiter bash install/install.sh</code></pre></div>
+      <p class="plain">Идёт пару минут. В конце увидишь «Агент JUPITER установлен». Ничего больше нажимать не надо.</p>
+    </section>
+
+    <section class="step" id="s3">
+      <div class="step-head"><div class="step-num">3</div><h2>Поставить URAN (исполнитель)</h2></div>
+      <p class="lead">То же самое для второго бота:</p>
+      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">sudo</span> AGENT=uran bash install/install.sh</code></pre></div>
+    </section>
+
+    <section class="step" id="s4">
+      <div class="step-head"><div class="step-num">4</div><h2>Войти в Claude (по разу на бота)</h2></div>
+      <p class="lead">Каждый бот логинится в твою подписку Anthropic. Вводи команды по одной:</p>
+      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">sudo</span> -u jupiter -H bash -lc '/home/jupiter/.local/bin/claude login'
+<span class="c-cmd">sudo</span> -u uran    -H bash -lc '/home/uran/.local/bin/claude login'</code></pre></div>
+      <p class="plain">Появится ссылка — открой её в браузере, подтверди вход, скопируй код обратно в терминал. Сделай так для обоих.</p>
+    </section>
+
+    <section class="step" id="s5">
+      <div class="step-head"><div class="step-num">5</div><h2>Связать оператора и исполнителя</h2></div>
+      <p class="lead">Чтобы JUPITER мог поручать задачи URAN:</p>
+      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">sudo</span> bash install/link-agents.sh</code></pre></div>
+    </section>
+
+    <section class="step" id="s6">
+      <div class="step-head"><div class="step-num">6</div><h2>Подключить Telegram-ботов</h2></div>
+      <p class="lead">1. В <a href="https://t.me/BotFather">@BotFather</a> командой <span class="inline">/newbot</span> создай <b>два</b> бота — получишь два токена.<br>
+         2. У <a href="https://t.me/userinfobot">@userinfobot</a> узнай свой <b>Telegram ID</b> (число).<br>
+         3. Установи «мост» каждому боту:</p>
+      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">sudo</span> AGENT=jupiter bash install/telegram-install.sh
+<span class="c-cmd">sudo</span> AGENT=uran    bash install/telegram-install.sh</code></pre></div>
+      <p class="lead">4. Впиши токен и свой ID (откроется простой редактор; вставь значения, сохрани <b>Ctrl+O, Enter</b>, выйди <b>Ctrl+X</b>):</p>
+      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">sudo</span> -u jupiter nano /home/jupiter/.config/jupiter/telegram.env
+<span class="c-cmd">sudo</span> -u uran    nano /home/uran/.config/uran/telegram.env</code></pre></div>
+      <p class="plain">Внутри файла заполни две строки: <span class="inline">TELEGRAM_BOT_TOKEN=</span> (токен бота) и <span class="inline">TELEGRAM_ALLOWED_IDS=</span> (твой ID).</p>
+      <p class="lead">5. Запусти ботов:</p>
+      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">sudo</span> systemctl enable --now tg-jupiter
+<span class="c-cmd">sudo</span> systemctl enable --now tg-uran</code></pre></div>
+      <div class="callout err"><span class="ic">🔒</span><p>Токен — это пароль бота. Никому не показывай, не пересылай в чаты, не выкладывай в интернет.</p></div>
+    </section>
+
+    <section class="step" id="s7">
+      <div class="step-head"><div class="step-num">7</div><h2>Проверка</h2></div>
+      <p class="lead">Открой Telegram, найди своего бота JUPITER, напиши ему <span class="inline">/start</span>, потом любую задачу. Он ответит «🔄 Принял задачу, работаю…», покажет «печатает…», пришлёт результат и «✅ Готово».</p>
+      <div class="callout tip"><span class="ic">📎</span><p>Если бот сделал файл (например HTML или отчёт) — он <b>пришлёт его прямо в чат документом</b>. Можно сразу пересылать.</p></div>
+    </section>
+
+    <section class="step" id="after">
+      <div class="step-head"><div class="step-num">∞</div><h2>Дальше — с любого устройства</h2></div>
+      <p class="lead">Всё управление — из Telegram, с телефона или ноута, откуда угодно. Сервер один, устройств сколько хочешь.</p>
+      <p class="plain">Обновить ботов (когда в репозитории что-то улучшат):</p>
+      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">sudo</span> jupiter-update
+<span class="c-cmd">sudo</span> uran-update</code></pre></div>
+    </section>
+
+    <section class="step" id="trouble">
+      <div class="step-head"><div class="step-num">🛟</div><h2>Если что-то не так</h2></div>
+      <table>
+        <tr><th>Симптом</th><th>Что сделать</th></tr>
+        <tr><td>Бот не отвечает</td><td>Напиши ему <span class="inline">/start</span>. Не помогло — на сервере: <span class="inline">sudo systemctl restart tg-jupiter</span></td></tr>
+        <tr><td>«Ошибка агента» на каждое сообщение</td><td>Бот не залогинен — повтори Шаг 4, затем перезапусти: <span class="inline">sudo systemctl restart tg-jupiter</span></td></tr>
+        <tr><td>Бот «молчит» / ничего не делает</td><td>Для URAN включи полную автономию: в его <span class="inline">telegram.env</span> впиши <span class="inline">CLAUDE_PERMISSION_ARGS=--dangerously-skip-permissions</span> и перезапусти</td></tr>
+        <tr><td>Файл не прислал</td><td>Попроси «сохрани и пришли файл». Логи: <span class="inline">sudo journalctl -u tg-jupiter -n 40</span></td></tr>
+      </table>
+      <p class="plain">Полная инструкция в репозитории: <span class="inline">docs/SETUP-DAY-1.md</span>.</p>
+    </section>
+
+    <footer>
+      © Wayan Onchain · <a href="https://t.me/wayan_onchain">@wayan_onchain</a> · 2026<br>
+      Репозиторий: <a href="https://github.com/wayanonchain/Claude">github.com/wayanonchain/Claude</a>
+    </footer>
+  </main>
+</div>
+
+<script>
+  // прогресс-бар
+  const prog=document.getElementById('prog');
+  addEventListener('scroll',()=>{const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;prog.style.width=p+'%';});
+  // тема
+  const tb=document.getElementById('theme');
+  tb.onclick=()=>{const r=document.documentElement;r.dataset.theme=r.dataset.theme==='light'?'':'light';};
+  // copy
+  document.querySelectorAll('.copy').forEach(b=>{b.onclick=()=>{
+    const code=b.closest('.code').querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(()=>{const t=b.textContent;b.textContent='✓ скопировано';setTimeout(()=>b.textContent=t,1400);});
+  };});
+  // scroll-spy
+  const links=[...document.querySelectorAll('nav.side a')];
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  addEventListener('scroll',()=>{let i=secs.length-1;for(let k=0;k<secs.length;k++){if(secs[k]&&secs[k].getBoundingClientRect().top<120)i=k;}links.forEach(a=>a.classList.remove('active'));if(links[i])links[i].classList.add('active');});
+</script>
+</body>
+</html>
