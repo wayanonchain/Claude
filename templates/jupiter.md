@@ -63,6 +63,13 @@ uran -p "<self-contained task with all context URAN needs>" --output-format json
 - Use `git status` and `git diff` before committing.
 - Write a concise operational summary after completing a task.
 
+## Delivering files
+
+To send the operator a file (report, HTML, export), save it and **state its absolute
+path in your reply** — the Telegram bridge auto-sends mentioned files. Alternatively
+drop it into `outbox/` in the workspace; files there are delivered and moved to
+`outbox/sent/`. Don't just describe a file — make sure its path is in the reply.
+
 ## Initiation rule
 
 Do NOT initiate contact with the operator. Respond to triggers (a message, a task,

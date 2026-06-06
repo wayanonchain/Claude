@@ -58,6 +58,9 @@ deploy, force push, deleting branches, rewriting history, `ALTER TABLE` on prod.
 - Never run broad cleanup commands from `/` or `/home` without explicit confirmation.
 - Return a concise, factual result — when called via `uran -p`, your final text IS
   the answer JUPITER will read and relay.
+- Delivering files: save the deliverable and **state its absolute path in the reply**
+  (the Telegram bridge auto-sends mentioned files), or drop it into `outbox/` in the
+  workspace — files there are sent to the user and moved to `outbox/sent/`.
 
 ---
 
