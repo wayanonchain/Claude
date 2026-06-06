@@ -107,6 +107,22 @@ install.sh (root) ──► создаёт пользователя, стави�
 uninstall.sh ──► снять команды/сервис/sudoers (home по умолчанию цел; --purge сносит)
 ```
 
+## Слои фреймворка и порядок загрузки
+
+Помимо двух агентов, репозиторий организован как слои знаний. Порядок применения:
+
+1. `GLOBAL.md` — поведение по умолчанию для всех агентов
+2. `WORKSPACE.md` — контекст конкретного агента/проекта
+3. `rules` — операционные границы
+4. `skills/` — переиспользуемые навыки
+5. `workflows/` — повторяемые процессы (coding / content / research)
+6. `frameworks/` — модели мышления (first-principles, risk-analysis)
+7. `blueprints/` — преднастройки под роль/кейс (operator, developer, creator, founder, researcher)
+8. `examples/` — заполненные примеры
+
+Слои `workflows/`, `frameworks/`, `blueprints/` — универсальные строительные блоки;
+их подключают и JUPITER (при разборе задачи), и URAN (при исполнении).
+
 ---
 
 > *© Wayan Onchain ([@wayan_onchain](https://t.me/wayan_onchain)), 2026.*
