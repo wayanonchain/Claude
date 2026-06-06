@@ -151,6 +151,13 @@ clone_repo(){
   if [[ "$AGENT_REPO_SOURCE" == "local" ]]; then
     # Ставим из текущего локального чекаута — без зависимости от GitHub и без
     # риска получить устаревший код. .git не копируем.
+    # Защита: если источник и приёмник — один каталог (напр. установка jupiter
+    # из /home/jupiter/Claude в /home/jupiter/Claude), rsync --delete не делаем.
+    if [[ "$(realpath "$REPO_ROOT")" == "$(realpath "$AGENT_REPO_DIR" 2>/dev/null || echo "$AGENT_REPO_DIR")" ]]; then
+      ok "Репо уже на месте (источник == приёмник): ${AGENT_REPO_DIR} — не копирую"
+      chown -R "${AGENT_USER}:${AGENT_USER}" "$AGENT_REPO_DIR" || true
+      return
+    fi
     install -d -m 0755 -o "$AGENT_USER" -g "$AGENT_USER" "$AGENT_REPO_DIR"
     rsync -a --delete --exclude '.git' --exclude '__pycache__' "${REPO_ROOT}/" "${AGENT_REPO_DIR}/"
     chown -R "${AGENT_USER}:${AGENT_USER}" "$AGENT_REPO_DIR"

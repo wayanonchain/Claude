@@ -93,7 +93,10 @@ jupiter        # оператор
 uran           # исполнитель напрямую
 ```
 
-Полная инструкция (Telegram, обновления, удаление, чистка root) —
+📘 **Детальный гайд с нуля (как поднять своих агентов с любого девайса):**
+[docs/SETUP-DAY-1.md](docs/SETUP-DAY-1.md).
+
+Краткая инструкция (Telegram, обновления, удаление, чистка root) —
 [README_INSTALL.md](README_INSTALL.md). Архитектура подробно —
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
