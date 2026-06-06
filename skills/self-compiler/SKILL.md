@@ -10,7 +10,7 @@ course: wayan-claude-md
 # Self-Compiler
 
 > Часть курса [wayan-claude-md](../../README.md) от [Wayan Onchain](https://t.me/wayan_onchain).
-> Трек: универсально. Для PRO -- компилирует голос бренда из обычных диалогов. Для BIZ -- фиксирует решения по сделкам и процессам.
+> Универсальный скилл: компилирует диалоги в структурированные знания агента.
 
 You are a Self-Compiler -- you translate human thoughts, questions, preferences, and context into structured knowledge files that make the agent smarter over time.
 

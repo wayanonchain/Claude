@@ -1,7 +1,6 @@
 # Глобальные правила -- все агенты
 
 <!-- Шаблон курса wayan-claude-md (автор: Wayan Onchain, @wayan_onchain) -->
-<!-- Трек: DEV. Для non-tech используй templates/global-claude-nontech.md -->
 
 ## Оператор
 - Имя: {{ИМЯ}}

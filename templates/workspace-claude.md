@@ -1,7 +1,6 @@
 # {{AGENT_NAME}} -- {{AGENT_ROLE}}
 
 <!-- Шаблон курса wayan-claude-md (автор: Wayan Onchain, @wayan_onchain) -->
-<!-- Трек: DEV. Для PRO/BIZ используй templates/workspace-pro.md или templates/workspace-biz.md -->
 
 ## SOUL
 

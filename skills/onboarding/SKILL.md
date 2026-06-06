@@ -1,6 +1,6 @@
 ---
 name: agent-onboarding
-description: Post-install onboarding flow. Agent greets the user, activates self-compiler, and guides them through configuring CLAUDE.md and workspace files through natural conversation. Use after fresh Claude Code install. Covers identity, goals, style, stack, and generates all config files. The whole flow takes 5-10 minutes. Part of the wayan-claude-md course by wayan_onchain — adapted for both developers (DEV) and non-developers (PRO marketers, BIZ owners).
+description: Post-install onboarding flow. Agent greets the user, activates self-compiler, and guides them through configuring CLAUDE.md and workspace files through natural conversation. Use after fresh Claude Code install. Covers identity, goals, style, stack, and generates all config files. The whole flow takes 5-10 minutes. Part of the Wayan project by wayan_onchain — universal, role-aware (operator / executor).
 version: 1.1.0
 user-invocable: true
 author: wayan_onchain
@@ -9,8 +9,8 @@ course: wayan-claude-md
 
 # Agent Onboarding
 
-> Часть курса [wayan-claude-md](../../README.md) от [Wayan Onchain](https://t.me/wayan_onchain).
-> Версия 1.1: добавлена ветка для non-tech (PRO / BIZ) -- агент задаёт другие вопросы маркетологу и SMB-владельцу, чем разработчику.
+> Часть проекта [Wayan](../../README.md) от [Wayan Onchain](https://t.me/wayan_onchain).
+> Универсально и с учётом роли агента (operator / executor).
 
 Post-install onboarding skill. Turns a blank Claude Code workspace into a fully
 configured agent through a short conversational flow.
@@ -52,8 +52,9 @@ No questions in this phase. Wait for any reply to proceed.
 
 ### Phase 2: Identity (profile.md + USER.md)
 
-**Goal:** Establish who the operator is. From the answer to question #4 the flow
-branches into one of three tracks: DEV / PRO / BIZ (wayan_onchain course tracks).
+**Goal:** Establish who the operator is. Detect this agent's `role` from its
+workspace CLAUDE.md (operator = JUPITER-style gateway, executor = URAN-style worker).
+If it cannot be determined, ask: "Am I your operator/gateway agent, or the executor?"
 
 Questions (ask ONE at a time, wait for answer before next):
 
@@ -61,10 +62,6 @@ Questions (ask ONE at a time, wait for answer before next):
 2. What's your timezone? (e.g. UTC+3, PST, "I'm in Berlin")
 3. What language do you prefer for communication?
 4. What do you do? (role, profession, area of expertise)
-   - If answer contains "developer / engineer / programmer / DevOps" -> set `track=DEV`
-   - If answer contains "marketing / SMM / copywriter / content / blogger" -> set `track=PRO`
-   - If answer contains "business owner / entrepreneur / founder / CEO / SMB" -> set `track=BIZ`
-   - Otherwise -> ask clarifying: "Are you more of a developer, a marketer, or a business owner?"
 5. What's your experience level with AI agents? (beginner / intermediate / advanced)
 
 **Generate from answers:**
@@ -116,31 +113,16 @@ Questions:
 
 ### Phase 5: Stack & Tools (stack.md)
 
-**Goal:** Map the working environment. Questions depend on `track` from Phase 2.
+**Goal:** Map the working environment.
 
-#### If `track=DEV`
+1. What tools, languages, and services do you use? (GitHub, Docker, cloud,
+   databases, programming languages — whatever applies)
+2. Any APIs or integrations I should know about?
+3. Where does my work live? (repos, folders, channels)
 
-1. What programming languages do you use?
-2. What tools and services? (GitHub, Docker, cloud providers, databases)
-3. Any APIs or integrations I should know about?
+**Generate:** `~/knowledge/stack.md`
 
-#### If `track=PRO` (marketer / SMM / copywriter)
-
-1. What channels do you publish to? (Telegram, VK, Instagram, YouTube, X, email)
-2. What planner / publisher do you use? (SMMplanner, SmmBox, native, manual)
-3. Which brands or accounts do you handle? (one or several -- I'll need a Project per brand)
-4. Do you have past content I can study for voice? (yes -> activate brand-voice skill)
-
-#### If `track=BIZ` (business owner)
-
-1. What's your business niche? (online school, e-com, services, agency, ...)
-2. What's your stack? (CRM: AmoCRM/Битрикс/HubSpot; bookkeeping: 1С/QuickBooks; messengers: TG/WhatsApp)
-3. Team size? (solo / 2-5 / 6-10)
-4. Which operational roles do you want to automate first? (marketing / sales / support / reports / docs)
-
-**Generate:** `~/knowledge/stack.md` (matching the track)
-
-**Confirm:** "Stack captured. Track: {{DEV|PRO|BIZ}}. Primary: {{TOP_3_ITEMS}}."
+**Confirm:** "Stack captured. Primary: {{TOP_3_ITEMS}}."
 
 ---
 
@@ -150,14 +132,14 @@ Questions:
 
 Steps:
 
-1. Load template based on `track`:
-   - `track=DEV` -> `templates/claude-md-student.md` (or `templates/global-claude.md`)
-   - `track=PRO` -> `templates/global-claude-nontech.md` + `templates/workspace-pro.md`
-   - `track=BIZ` -> `templates/global-claude-nontech.md` + `templates/workspace-biz.md`
+1. Load template based on `role`:
+   - `role=operator` -> `templates/jupiter.md`
+   - `role=executor` -> `templates/uran.md`
+   - global rules -> `templates/global-claude.md`
 2. Fill placeholders with collected data:
-   - `{{NAME}}`, `{{TIMEZONE}}`, `{{LANGUAGE}}` from Phase 2
-   - `{{PROFESSION}}`, `{{NICHE}}` from Phase 2/3
-   - `{{CODE_STYLE}}` (DEV) or `{{VOICE_NOTES}}` (PRO) or `{{SMB_STACK}}` (BIZ) from Phase 4/5
+   - `{{OPERATOR_NAME}}`, `{{OPERATOR_TIMEZONE}}`, `{{OPERATOR_LANGUAGE}}` from Phase 2
+   - `{{PROFESSION}}` from Phase 2/3
+   - code/work style from Phase 4
    - `{{COMMIT_LANGUAGE}}` from Phase 4 (default: English)
    - `{{STYLE_BRIEF_OR_DETAILED}}` from Phase 4 (default: "Brief answers, artifact first")
 3. Present the draft to the student:
@@ -168,7 +150,8 @@ Steps:
 If the student says "looks good" or similar -- write immediately, no further
 questions.
 
-For PRO/BIZ, also generate `~/.claude/rules/voice.md` (PRO) or `~/.claude/rules/smb-stack.md` (BIZ).
+For the operator agent, also note in its CLAUDE.md how it delegates to the executor
+(`uran -p "<task>"`); for the executor, note its autonomy zones.
 
 ---
 
