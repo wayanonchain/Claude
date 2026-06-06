@@ -88,18 +88,11 @@ install_base_dependencies(){
   step 1 "Базовые пакеты"
   apt_get update -qq
   apt_get install -y -qq ca-certificates gnupg lsb-release software-properties-common sudo curl wget git jq rsync build-essential cron logrotate nano unzip
-  . /etc/os-release
-  if [[ "${VERSION_ID:-}" == "22.04" ]]; then
-    if ! command -v python3.12 >/dev/null 2>&1; then
-      log "deadsnakes PPA для Python 3.12"; add-apt-repository -y ppa:deadsnakes/ppa >/dev/null; apt_get update -qq
-    fi
-    apt_get install -y -qq python3.12 python3.12-venv python3.12-dev python3-pip
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 100 >/dev/null 2>&1 || true
-    update-alternatives --set python3 /usr/bin/python3.12 >/dev/null 2>&1 || true
-  else
-    apt_get install -y -qq python3 python3-venv python3-pip python3-dev
-  fi
-  ok "Python: $(python3 --version 2>&1)"
+  # ВАЖНО: системный python3 НЕ трогаем (никаких update-alternatives) — это ломает
+  # apt (apt_pkg собран под штатный python). Telegram-мост работает на stdlib и
+  # на любом python3 (3.10+), отдельный 3.12 не нужен.
+  apt_get install -y -qq python3 python3-venv python3-pip python3-dev
+  ok "Python: $(python3 --version 2>&1) (системный python3 не изменялся)"
 }
 
 install_node(){
