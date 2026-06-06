@@ -18,8 +18,11 @@
 """
 import json
 import os
+import queue
+import re
 import subprocess
 import sys
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -111,6 +114,72 @@ def tg_typing(chat_id):
         pass
 
 
+def tg_send_document(chat_id, path, caption=""):
+    # Отправка файла через multipart/form-data (без внешних зависимостей).
+    fname = os.path.basename(path)
+    with open(path, "rb") as fh:
+        data = fh.read()
+    boundary = "----tgbridge" + uuid.uuid4().hex
+    nl = b"\r\n"
+    body = b""
+    body += b"--" + boundary.encode() + nl
+    body += b'Content-Disposition: form-data; name="chat_id"' + nl + nl
+    body += str(chat_id).encode() + nl
+    if caption:
+        body += b"--" + boundary.encode() + nl
+        body += b'Content-Disposition: form-data; name="caption"' + nl + nl
+        body += caption[:1000].encode() + nl
+    body += b"--" + boundary.encode() + nl
+    body += ('Content-Disposition: form-data; name="document"; filename="%s"' % fname).encode() + nl
+    body += b"Content-Type: application/octet-stream" + nl + nl
+    body += data + nl
+    body += b"--" + boundary.encode() + b"--" + nl
+    req = urllib.request.Request(f"{API}/sendDocument", data=body)
+    req.add_header("Content-Type", "multipart/form-data; boundary=" + boundary)
+    with urllib.request.urlopen(req, timeout=180) as r:
+        return json.load(r)
+
+
+# Файлы для доставки: (1) пути, упомянутые агентом в ответе; (2) папка outbox/.
+_PATH_RE = re.compile(r"/[\w./\-]+\.[A-Za-z0-9]{1,8}")
+_MAX_FILE = 45 * 1024 * 1024  # лимит бота Telegram ~50МБ
+OUTBOX = os.path.join(WORKSPACE, "outbox")
+
+
+def _safe_file(p):
+    home = os.path.realpath(os.path.expanduser("~"))
+    try:
+        rp = os.path.realpath(p)
+        return (os.path.isfile(rp) and rp.startswith(home + os.sep)
+                and 0 < os.path.getsize(rp) <= _MAX_FILE)
+    except OSError:
+        return False
+
+
+def collect_files(reply):
+    found = []
+    for m in _PATH_RE.findall(reply or ""):
+        p = m.rstrip(".")
+        if p not in found and _safe_file(p):
+            found.append(p)
+        if len(found) >= 5:
+            break
+    return found
+
+
+def drain_outbox():
+    # Файлы из outbox/ отправляем и переносим в outbox/sent/, чтобы не слать дважды.
+    if not os.path.isdir(OUTBOX):
+        return []
+    sent_dir = os.path.join(OUTBOX, "sent")
+    out = []
+    for name in sorted(os.listdir(OUTBOX)):
+        p = os.path.join(OUTBOX, name)
+        if os.path.isfile(p) and _safe_file(p):
+            out.append(p)
+    return out
+
+
 # --- вызов агента ---
 def _run_claude(prompt, sid, resume):
     args = [CLAUDE_BIN, "-p", prompt, "--output-format", "json"]
@@ -161,6 +230,56 @@ def ask_claude(chat_key, prompt):
         return out or "(агент вернул пустой ответ)"
 
 
+# --- очередь задач и воркер ---
+# Главный цикл только принимает апдейты и мгновенно отвечает; тяжёлый вызов
+# агента идёт в отдельном воркере, поэтому Telegram-бот всегда отзывчив, задачи
+# не теряются и видна позиция в очереди.
+JOBS = queue.Queue()
+
+
+def typing_keepalive(chat_id, stop_event):
+    # Индикатор «печатает…» живёт ~5с — обновляем, пока агент работает.
+    while not stop_event.is_set():
+        tg_typing(chat_id)
+        stop_event.wait(4)
+
+
+def worker():
+    while True:
+        chat_id, chat_key, text = JOBS.get()
+        stop = threading.Event()
+        t = threading.Thread(target=typing_keepalive, args=(chat_id, stop), daemon=True)
+        t.start()
+        started = time.time()
+        try:
+            reply = ask_claude(chat_key, text)
+        except Exception as e:
+            reply = f"⚠️ Внутренняя ошибка моста: {e}"
+        finally:
+            stop.set()
+        took = int(time.time() - started)
+        tg_send(chat_id, reply)
+        # Доставляем файлы: упомянутые в ответе + из outbox/.
+        files = collect_files(reply)
+        outbox = drain_outbox()
+        for p in outbox:
+            if p not in files:
+                files.append(p)
+        sent_dir = os.path.join(OUTBOX, "sent")
+        for p in files:
+            try:
+                tg_send_document(chat_id, p, caption=os.path.basename(p))
+                log(f"отправлен файл: {p}")
+                # перенос только для файлов из outbox
+                if os.path.dirname(os.path.realpath(p)) == os.path.realpath(OUTBOX):
+                    os.makedirs(sent_dir, exist_ok=True)
+                    os.replace(p, os.path.join(sent_dir, os.path.basename(p)))
+            except Exception as e:
+                tg_send(chat_id, f"⚠️ Не смог отправить файл {os.path.basename(p)}: {e}")
+        tg_send(chat_id, f"✅ Готово за {took}с." if took >= 5 else "✅ Готово.")
+        JOBS.task_done()
+
+
 # --- обработка апдейтов ---
 def handle(update):
     msg = update.get("message") or update.get("edited_message")
@@ -184,7 +303,8 @@ def handle(update):
             chat_id,
             f"🤖 Агент {AGENT.upper()} на связи.\n"
             "Пиши задачу обычным текстом.\n"
-            "/reset — начать новую сессию (забыть контекст).",
+            "/reset — начать новую сессию (забыть контекст).\n"
+            "/queue — сколько задач в очереди.",
         )
         return
     if text == "/reset":
@@ -192,11 +312,19 @@ def handle(update):
         save_state(SESSIONS)
         tg_send(chat_id, "🔄 Контекст сброшен, начинаю новую сессию.")
         return
+    if text == "/queue":
+        n = JOBS.qsize()
+        tg_send(chat_id, f"📋 В очереди задач: {n}." if n else "📋 Очередь пуста.")
+        return
 
     log(f"[{AGENT}] от {user_id}: {text[:80]}")
-    tg_typing(chat_id)
-    reply = ask_claude(chat_key, text)
-    tg_send(chat_id, reply)
+    # Мгновенный ack + позиция в очереди, затем задача уходит воркеру.
+    ahead = JOBS.qsize()
+    if ahead == 0:
+        tg_send(chat_id, "🔄 Принял задачу, работаю…")
+    else:
+        tg_send(chat_id, f"⏳ Принял. Передо мной ещё задач: {ahead}. Начну, как освобожусь.")
+    JOBS.put((chat_id, chat_key, text))
 
 
 def main():
@@ -206,6 +334,7 @@ def main():
         log(f"Режим прав: {' '.join(PERM_ARGS)}")
     else:
         log("Режим прав: безопасный (только allowlist из settings.json)")
+    threading.Thread(target=worker, daemon=True).start()
     offset = None
     while True:
         try:
