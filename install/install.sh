@@ -215,10 +215,13 @@ write_agent_prompt(){
     "${AGENT_WORKSPACE}/reports" "${AGENT_WORKSPACE}/projects" "${AGENT_WORKSPACE}/logs" \
     "$workspace_claude" "${workspace_claude}/skills" "${workspace_claude}/memory"
 
-  # Выбор шаблона по роли.
+  # Рабочий CLAUDE.md пишем ТОЛЬКО если его нет (защита настройки живого агента).
+  # Принудительно перезаписать: AGENT_FORCE_PROMPT=1.
   local op_template="${AGENT_REPO_DIR}/templates/jupiter.md"
   local ex_template="${AGENT_REPO_DIR}/templates/uran.md"
-  if [[ "$AGENT_ROLE" == "operator" && -f "$op_template" ]]; then
+  if [[ -f "${workspace_claude}/CLAUDE.md" && "${AGENT_FORCE_PROMPT:-0}" != "1" ]]; then
+    ok "Рабочий CLAUDE.md уже есть — не трогаю (AGENT_FORCE_PROMPT=1 чтобы перезаписать)"
+  elif [[ "$AGENT_ROLE" == "operator" && -f "$op_template" ]]; then
     render_template "$op_template" "JUPITER" "${workspace_claude}/CLAUDE.md"
   elif [[ "$AGENT_ROLE" == "executor" && -f "$ex_template" ]]; then
     render_template "$ex_template" "URAN" "${workspace_claude}/CLAUDE.md"
