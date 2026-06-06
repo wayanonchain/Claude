@@ -112,23 +112,35 @@ def tg_typing(chat_id):
 
 
 # --- вызов агента ---
-def ask_claude(chat_key, prompt):
+def _run_claude(prompt, sid, resume):
     args = [CLAUDE_BIN, "-p", prompt, "--output-format", "json"]
-    sid = SESSIONS.get(chat_key)
-    if sid:
-        args += ["--resume", sid]
-    else:
-        sid = str(uuid.uuid4())
-        args += ["--session-id", sid]
+    args += ["--resume", sid] if resume else ["--session-id", sid]
     args += PERM_ARGS
+    return subprocess.run(
+        args, cwd=WORKSPACE, capture_output=True, text=True, timeout=CLAUDE_TIMEOUT,
+    )
+
+
+def _stale_session(proc):
+    # claude не нашёл сохранённую сессию (напр. после смены workspace/миграции).
+    blob = ((proc.stderr or "") + (proc.stdout or "")).lower()
+    return ("no conversation found" in blob) or ("session id" in blob and "not found" in blob)
+
+
+def ask_claude(chat_key, prompt):
+    sid = SESSIONS.get(chat_key)
+    resume = bool(sid)
+    if not sid:
+        sid = str(uuid.uuid4())
     try:
-        proc = subprocess.run(
-            args,
-            cwd=WORKSPACE,
-            capture_output=True,
-            text=True,
-            timeout=CLAUDE_TIMEOUT,
-        )
+        proc = _run_claude(prompt, sid, resume)
+        # Если возобновление сорвалось из-за пропавшей сессии — стартуем свежую.
+        if proc.returncode != 0 and resume and _stale_session(proc):
+            log(f"сессия {sid} не найдена — начинаю новую для chat={chat_key}")
+            SESSIONS.pop(chat_key, None)
+            sid = str(uuid.uuid4())
+            resume = False
+            proc = _run_claude(prompt, sid, resume)
     except subprocess.TimeoutExpired:
         return "⏱ Агент не ответил за отведённое время. Попробуй сузить запрос."
     if proc.returncode != 0:
