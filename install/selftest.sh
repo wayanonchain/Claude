@@ -30,11 +30,12 @@ contains(){ # contains "описание" "подстрока" "строка"
 
 PY_BEFORE="$(python3 --version 2>&1)"
 
+# Роль задаём явно (имена demoop/demoex не равны jupiter, иначе оба = executor).
 echo "### Установка ${OP} (operator) ###"
-if AGENT="$OP" bash "$REPO/install/install.sh" >>"$LOG" 2>&1; then echo "  установлен"; else echo "  ОШИБКА — хвост лога:"; tail -25 "$LOG"; fi
+if AGENT="$OP" AGENT_ROLE=operator bash "$REPO/install/install.sh" >>"$LOG" 2>&1; then echo "  установлен"; else echo "  ОШИБКА — хвост лога:"; tail -25 "$LOG"; fi
 
 echo "### Установка ${EX} (executor) ###"
-if AGENT="$EX" bash "$REPO/install/install.sh" >>"$LOG" 2>&1; then echo "  установлен"; else echo "  ОШИБКА — хвост лога:"; tail -25 "$LOG"; fi
+if AGENT="$EX" AGENT_ROLE=executor bash "$REPO/install/install.sh" >>"$LOG" 2>&1; then echo "  установлен"; else echo "  ОШИБКА — хвост лога:"; tail -25 "$LOG"; fi
 
 echo "### Связка ${OP} -> ${EX} ###"
 OPERATOR="$OP" EXECUTOR="$EX" bash "$REPO/install/link-agents.sh" >>"$LOG" 2>&1 && echo "  связано" || { echo "  ОШИБКА link — хвост лога:"; tail -15 "$LOG"; }
