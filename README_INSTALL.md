@@ -63,6 +63,37 @@ sudo bash install/remove-root-claude.sh --yes --purge
 
 Удаление строго ограничено домашней папкой `root` и не трогает других агентов.
 
+## Общение через Telegram (один бот = один агент)
+
+1. Создай бота у @BotFather (`/newbot`) — получишь токен.
+2. Узнай свой Telegram user id у @userinfobot.
+3. Поставь мост для агента (нужен root):
+
+```bash
+sudo AGENT=jupiter bash install/telegram-install.sh
+sudo AGENT=uran    bash install/telegram-install.sh
+```
+
+4. Впиши токен и свой id в конфиг (секрет, в git не попадает):
+
+```bash
+sudo -u jupiter nano /home/jupiter/.config/jupiter/telegram.env
+sudo -u uran    nano /home/uran/.config/uran/telegram.env
+```
+
+5. Запусти сервисы:
+
+```bash
+sudo systemctl enable --now tg-jupiter
+sudo systemctl enable --now tg-uran
+sudo journalctl -u tg-jupiter -f   # логи
+```
+
+Доступ только для id из `TELEGRAM_ALLOWED_IDS`. По умолчанию режим прав
+безопасный (агент использует только allowlist из `settings.json`); для полной
+автономии в `telegram.env` поставь `CLAUDE_PERMISSION_ARGS=--dangerously-skip-permissions`
+(осознанно — это даёт боту право выполнять любые инструменты на VPS).
+
 ## Удаление агента
 
 ```bash
