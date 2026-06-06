@@ -11,3 +11,5 @@ telegram-sessions.json
 secrets/
 .idea/
 .vscode/
+__pycache__/
+*.pyc
