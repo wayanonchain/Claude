@@ -6,70 +6,81 @@
 <title>День 1 — твои боты JUPITER + URAN · Wayan Onchain</title>
 <style>
   :root{
-    --bg:#0e0f13; --card:#16181f; --card2:#1c1f28; --line:rgba(255,255,255,.08);
-    --text:#e8e9ee; --muted:#9aa0ad; --accent:#7c5cff; --accent2:#19c8a5;
-    --code:#0a0b0f; --ok:#19c8a5; --warn:#ffb454; --err:#ff6b6b;
+    /* Палитра в духе Claude: тёплый кремовый + клэй-акцент */
+    --bg:#faf9f5; --card:#ffffff; --card2:#f0eee6; --line:rgba(40,38,34,.12);
+    --text:#2b2a27; --muted:#6b6862; --accent:#d97757; --accent2:#bf5a36;
+    /* код всегда тёмный «терминальный» — читается в любой теме */
+    --code-bg:#1d1b18; --code-tx:#ece8df; --code-cmd:#e6a384; --code-com:#8d877c; --code-str:#9cc39a;
+    --ok:#4f9d69; --warn:#c98a2b; --err:#c5524a;
   }
-  [data-theme="light"]{
-    --bg:#f6f7f9; --card:#ffffff; --card2:#f1f2f6; --line:rgba(0,0,0,.08);
-    --text:#1b1d24; --muted:#5b616e; --code:#0f1117;
+  [data-theme="dark"]{
+    --bg:#1f1e1c; --card:#2a2825; --card2:#33302b; --line:rgba(236,232,223,.12);
+    --text:#f0eee6; --muted:#a8a39a; --accent:#e08a6b; --accent2:#d97757;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{margin:0;background:var(--bg);color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    line-height:1.6;font-size:17px}
+    line-height:1.65;font-size:17px}
   .progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;z-index:100}
   header.top{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);
-    background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--line)}
-  .top .wrap{max-width:1100px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
-  .brand{font-weight:700;letter-spacing:.3px}
-  .brand b{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    background:color-mix(in srgb,var(--bg) 85%,transparent);border-bottom:1px solid var(--line)}
+  .top .wrap{max-width:880px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+  .brand{font-weight:700;letter-spacing:.2px}
+  .brand b{color:var(--accent)}
   .tbtn{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--text);
     border-radius:10px;padding:7px 12px;font-size:14px}
-  .layout{max-width:1100px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:240px 1fr;gap:32px}
-  nav.side{position:sticky;top:70px;align-self:start;height:max-content;padding:18px 0;font-size:15px}
-  nav.side a{display:block;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:8px;border-left:2px solid transparent}
-  nav.side a.active{color:var(--text);background:var(--card);border-left-color:var(--accent)}
-  main{padding:18px 0 80px}
-  .hero{padding:54px 0 30px}
-  .hero h1{font-size:42px;line-height:1.15;margin:0 0 14px}
-  .hero h1 b{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px}
+  main{padding:10px 0 80px}
+  .hero{padding:50px 0 24px}
+  .hero h1{font-size:40px;line-height:1.15;margin:0 0 14px}
+  .hero h1 b{color:var(--accent)}
   .hero p{color:var(--muted);font-size:19px;max-width:680px}
   .chips{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}
   .chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:14px;color:var(--muted)}
   .agents{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
   .agent{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
-  .agent .emo{font-size:30px}
-  .agent h3{margin:8px 0 6px}
-  .agent p{color:var(--muted);margin:0;font-size:15px}
-  section.step{padding:30px 0;border-top:1px solid var(--line)}
+  .agent .emo{font-size:30px}.agent h3{margin:8px 0 6px}.agent p{color:var(--muted);margin:0;font-size:15px}
+  /* вкладки Mac / VPS */
+  .tabs{display:flex;gap:10px;margin:30px 0 6px;position:sticky;top:62px;z-index:40;
+    background:var(--bg);padding:12px 0;border-bottom:1px solid var(--line)}
+  .tab{flex:1;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--text);
+    border-radius:14px;padding:16px;font-size:17px;font-weight:600;text-align:center;transition:.15s}
+  .tab .sub{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:4px}
+  .tab.active{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 35%,transparent)}
+  .pane{display:none}.pane.active{display:block}
+  section.step{padding:28px 0;border-top:1px solid var(--line)}
   .step-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
   .step-num{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
     font-weight:700;font-size:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
-  .step-head h2{margin:0;font-size:24px}
-  .lead{color:var(--muted);margin:.2em 0 1em}
-  .code{background:var(--code);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:14px 0}
-  .code .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03)}
-  .code .lbl{font-size:12px;color:var(--muted);letter-spacing:.5px}
-  .copy{cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:4px 10px;font-size:12px}
-  .copy:hover{color:var(--text)}
-  pre{margin:0;padding:14px 16px;overflow:auto}
-  code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:14.5px}
-  .c-cmd{color:#a9b7ff}
-  .c-com{color:#6c7280}
-  .inline{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--card2);padding:2px 6px;border-radius:6px;font-size:14px}
-  .callout{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:13px 15px;margin:14px 0}
-  .callout.tip{border-left-color:var(--accent2)} .callout.warn{border-left-color:var(--warn)} .callout.err{border-left-color:var(--err)}
-  .callout .ic{font-size:20px;flex:none}
-  .callout p{margin:0;font-size:15px;color:var(--text)}
-  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
-  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
-  th{color:var(--muted);font-weight:600}
+  .step-head h2{margin:0;font-size:23px}
+  .lead{color:var(--text);margin:.2em 0 1em}
   .plain{color:var(--muted);font-size:15px;margin:.3em 0}
+  .code{background:var(--code-bg);border:1px solid rgba(0,0,0,.3);border-radius:12px;overflow:hidden;margin:14px 0}
+  .code .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(236,232,223,.12);background:rgba(255,255,255,.04)}
+  .code .lbl{font-size:12px;color:#b8b2a6;letter-spacing:.5px}
+  .copy{cursor:pointer;border:1px solid rgba(236,232,223,.2);background:transparent;color:#cfc9bd;border-radius:8px;padding:4px 10px;font-size:12px}
+  .copy:hover{color:#fff;border-color:var(--accent)}
+  pre{margin:0;padding:14px 16px;overflow:auto}
+  code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:14.5px;color:var(--code-tx)}
+  .c-cmd{color:var(--code-cmd)} .c-com{color:var(--code-com)} .c-str{color:var(--code-str)}
+  .inline{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--card2);padding:2px 6px;border-radius:6px;font-size:14px;color:var(--text)}
+  .callout{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:13px 15px;margin:14px 0}
+  .callout.tip{border-left-color:var(--ok)} .callout.warn{border-left-color:var(--warn)} .callout.err{border-left-color:var(--err)}
+  .callout .ic{font-size:20px;flex:none}.callout p{margin:0;font-size:15px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600}
+  details.help{background:var(--card2);border:1px solid var(--line);border-radius:10px;margin:10px 0}
+  details.help summary{cursor:pointer;list-style:none;padding:11px 14px;font-size:14px;color:var(--accent);font-weight:600;display:flex;align-items:center;gap:8px;user-select:none}
+  details.help summary::-webkit-details-marker{display:none}
+  details.help summary::before{content:"❔";font-size:14px}
+  details.help[open] summary::before{content:"✕";font-size:12px}
+  details.help .body{padding:0 14px 13px;color:var(--muted);font-size:14.5px}
+  details.help .body b{color:var(--text)}
   footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:14px;text-align:center}
   footer a{color:var(--accent)}
-  @media(max-width:840px){.layout{grid-template-columns:1fr}nav.side{display:none}.hero h1{font-size:32px}.agents{grid-template-columns:1fr}}
+  @media(max-width:680px){.hero h1{font-size:30px}.agents{grid-template-columns:1fr}.tabs{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -78,178 +89,276 @@
 <header class="top">
   <div class="wrap">
     <div class="brand">Wayan <b>Onchain</b> · День 1</div>
-    <button class="tbtn" id="theme">☀️ / 🌙</button>
+    <button class="tbtn" id="theme">🌙 Тёмная</button>
   </div>
 </header>
 
-<div class="layout">
-  <nav class="side" id="nav">
-    <a href="#intro">Что это</a>
-    <a href="#need">Что нужно</a>
-    <a href="#s0">0 · Зайти на сервер</a>
-    <a href="#s1">1 · Скачать репозиторий</a>
-    <a href="#s2">2 · Поставить JUPITER</a>
-    <a href="#s3">3 · Поставить URAN</a>
-    <a href="#s4">4 · Войти в Claude</a>
-    <a href="#s5">5 · Связать агентов</a>
-    <a href="#s6">6 · Telegram-боты</a>
-    <a href="#s7">7 · Проверка</a>
-    <a href="#after">Дальше</a>
-    <a href="#trouble">Если что-то не так</a>
-  </nav>
+<div class="wrap"><main>
+  <section class="hero">
+    <h1>Твои боты: <b>JUPITER + URAN</b></h1>
+    <p>Подними двух цифровых сотрудников и управляй ими из Telegram. Программистом
+       быть не нужно — копируешь команды по одной и нажимаешь Enter.</p>
+    <div class="chips">
+      <span class="chip">⏱ ~15 минут</span>
+      <span class="chip">🤖 2 агента</span>
+      <span class="chip">📱 управление из Telegram</span>
+      <span class="chip">🧑‍💻 без навыков кода</span>
+    </div>
+    <div class="agents">
+      <div class="agent"><div class="emo">🪐</div><h3>JUPITER — оператор</h3>
+        <p>Главный бот. Разговаривает с тобой, понимает задачу и решает: сделать сам или поручить URAN.</p></div>
+      <div class="agent"><div class="emo">☄️</div><h3>URAN — исполнитель</h3>
+        <p>Рабочие руки. Пишет код, делает документы, ищет информацию, автоматизирует.</p></div>
+    </div>
+  </section>
 
-  <main>
-    <section class="hero" id="intro">
-      <h1>Твои боты: <b>JUPITER + URAN</b></h1>
-      <p>За один вечер ты поднимаешь на сервере двух цифровых сотрудников. Они работают
-         круглосуточно и слушаются тебя прямо из Telegram — с телефона, ноута, откуда угодно.
-         Программистом быть не нужно: копируешь команды по одной и нажимаешь Enter.</p>
-      <div class="chips">
-        <span class="chip">⏱ ~15 минут</span>
-        <span class="chip">🤖 2 агента</span>
-        <span class="chip">📱 управление из Telegram</span>
-        <span class="chip">🧑‍💻 без навыков кода</span>
-      </div>
-      <div class="agents">
-        <div class="agent"><div class="emo">🪐</div><h3>JUPITER — оператор</h3>
-          <p>Твой главный бот. Разговаривает с тобой, понимает задачу и решает: сделать сам или поручить URAN.</p></div>
-        <div class="agent"><div class="emo">☄️</div><h3>URAN — исполнитель</h3>
-          <p>Рабочие руки. Пишет код, делает документы, ищет информацию, автоматизирует.</p></div>
-      </div>
-      <div class="callout tip"><span class="ic">🧭</span><p>Принцип Wayan: <b>тишина = баг</b>. Ты всегда видишь, что делает агент. И ничего важного — без твоего «ок».</p></div>
-    </section>
+  <!-- ВЫБОР ПУТИ -->
+  <h2 style="margin:10px 0 0">Выбери, где ставить</h2>
+  <div class="tabs">
+    <div class="tab active" data-pane="vps">🖥 На сервере (VPS)
+      <span class="sub">боты работают 24/7 — рекомендуется</span></div>
+    <div class="tab" data-pane="mac">💻 На Mac (локально)
+      <span class="sub">для себя, пока компьютер включён</span></div>
+  </div>
 
-    <section class="step" id="need">
-      <div class="step-head"><div class="step-num">✓</div><h2>Что нужно подготовить</h2></div>
+  <!-- ============== VPS ============== -->
+  <div class="pane active" id="pane-vps">
+    <section class="step">
+      <div class="step-head"><div class="step-num">✓</div><h2>Что нужно</h2></div>
       <table>
         <tr><th>Что</th><th>Зачем</th></tr>
-        <tr><td>Сервер (VPS) с <b>Ubuntu 22.04 или 24.04</b></td><td>там будут жить боты 24/7</td></tr>
-        <tr><td>Доступ к серверу по <b>SSH</b> (логин root + IP)</td><td>чтобы вводить команды</td></tr>
+        <tr><td>Сервер (VPS) с <b>Ubuntu 22.04 / 24.04</b></td><td>там живут боты круглосуточно</td></tr>
+        <tr><td>Доступ по <b>SSH</b>: IP + логин <span class="inline">root</span></td><td>вводить команды</td></tr>
         <tr><td>Подписка <b>Anthropic</b> (Claude Pro / Max)</td><td>мозги ботов</td></tr>
-        <tr><td><b>Telegram</b> + 2 бота от <a href="https://t.me/BotFather">@BotFather</a></td><td>чтобы писать ботам</td></tr>
+        <tr><td><b>Telegram</b> + 2 бота от <a href="https://t.me/BotFather">@BotFather</a></td><td>писать ботам</td></tr>
       </table>
-      <p class="plain">VPS можно арендовать за пару долларов в месяц. При заказе выбери «Ubuntu 22.04». Провайдер пришлёт IP, логин <span class="inline">root</span> и пароль.</p>
+      <p class="plain">VPS стоит пару долларов в месяц. При заказе выбери «Ubuntu 22.04». Провайдер пришлёт IP, логин root и пароль.</p>
+      <details class="help"><summary>Что такое VPS и где его взять?</summary><div class="body">
+        <b>VPS</b> — это арендованный компьютер в дата-центре, который работает круглосуточно.
+        Боты живут на нём и отвечают тебе всегда, даже когда твой ноут выключен. Арендуют у
+        хостинг-провайдеров (Hetzner, DigitalOcean, Timeweb, Aeza и др.) — при заказе выбираешь
+        «Ubuntu 22.04», оплачиваешь, получаешь доступ.</div></details>
     </section>
 
-    <section class="step" id="s0">
+    <section class="step">
       <div class="step-head"><div class="step-num">0</div><h2>Зайти на сервер</h2></div>
-      <p class="lead">Открой «Терминал» (на Mac/Linux он встроен; на Windows — приложение «PowerShell» или «Terminal»). Вставь команду, заменив <span class="inline">ТВОЙ_IP</span> на IP сервера от провайдера:</p>
+      <p class="lead">Открой Терминал (Mac/Linux — встроенный; Windows — «PowerShell»). Замени <span class="inline">ТВОЙ_IP</span> на адрес сервера:</p>
       <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
 <pre><code><span class="c-cmd">ssh</span> root@ТВОЙ_IP</code></pre></div>
-      <p class="plain">Спросит пароль — введи (символы не отображаются, это нормально), нажми Enter. Готово, ты «внутри» сервера.</p>
+      <p class="plain">Спросит пароль — введи (символы не видны, это норма), Enter. Ты на сервере.</p>
+      <details class="help"><summary>Что такое SSH?</summary><div class="body">
+        <b>SSH</b> — это безопасный способ удалённо управлять сервером из своего терминала,
+        как будто ты сидишь прямо за ним. Ты печатаешь команды у себя, а выполняются они на сервере.</div></details>
+      <details class="help"><summary>Где найти ТВОЙ_IP?</summary><div class="body">
+        <b>IP</b> — это адрес сервера, набор цифр вида <span class="inline">203.0.113.45</span>.
+        Его присылает провайдер VPS на почту сразу после оплаты, и он есть в личном кабинете
+        провайдера в карточке сервера (поля «IP address», «IPv4»).</div></details>
+      <details class="help"><summary>Что такое root?</summary><div class="body">
+        <b>root</b> — главный пользователь сервера с полными правами (как «администратор»).
+        Логин root и пароль к нему тоже в письме/кабинете провайдера.</div></details>
+      <details class="help"><summary>Как открыть Терминал?</summary><div class="body">
+        <b>Mac:</b> нажми Cmd+Space, набери «Терминал», Enter.<br>
+        <b>Windows:</b> меню Пуск → набери «PowerShell» → открой.<br>
+        <b>Linux:</b> Ctrl+Alt+T. Терминал — это окно, куда вставляют команды и жмут Enter.</div></details>
     </section>
 
-    <section class="step" id="s1">
+    <section class="step">
       <div class="step-head"><div class="step-num">1</div><h2>Скачать репозиторий</h2></div>
-      <p class="lead">Скачиваем готовую систему с гита Wayan Onchain. Скопируй весь блок целиком и вставь:</p>
+      <p class="lead">Скопируй блок целиком и вставь:</p>
       <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
 <pre><code><span class="c-cmd">apt-get</span> update && <span class="c-cmd">apt-get</span> install -y git
 <span class="c-cmd">git</span> clone https://github.com/wayanonchain/Claude.git
 <span class="c-cmd">cd</span> Claude</code></pre></div>
-      <div class="callout tip"><span class="ic">📌</span><p>Это <b>тот самый</b> репозиторий. Создавать свой не нужно — ставишь прямо отсюда. Обновления потом прилетают сами командой <span class="inline">jupiter-update</span>.</p></div>
+      <div class="callout tip"><span class="ic">📌</span><p>Это готовая система Wayan Onchain. Свой репозиторий создавать не нужно — ставишь прямо отсюда.</p></div>
+      <details class="help"><summary>Что такое репозиторий и git clone?</summary><div class="body">
+        <b>Репозиторий</b> — это папка с программой, выложенная на GitHub. Команда
+        <span class="inline">git clone</span> просто <b>скачивает</b> её копию на твой сервер.
+        <span class="inline">cd Claude</span> — «зайти внутрь» скачанной папки.</div></details>
     </section>
 
-    <section class="step" id="s2">
-      <div class="step-head"><div class="step-num">2</div><h2>Поставить JUPITER (оператор)</h2></div>
-      <p class="lead">Одна команда — установщик сам сделает всё: создаст бота, поставит «движок», настроит роль.</p>
+    <section class="step">
+      <div class="step-head"><div class="step-num">2</div><h2>Поставить JUPITER и URAN</h2></div>
+      <p class="lead">По одной команде на бота. Установщик делает всё сам:</p>
       <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
-<pre><code><span class="c-cmd">sudo</span> AGENT=jupiter bash install/install.sh</code></pre></div>
-      <p class="plain">Идёт пару минут. В конце увидишь «Агент JUPITER установлен». Ничего больше нажимать не надо.</p>
+<pre><code><span class="c-cmd">sudo</span> AGENT=jupiter bash install/install.sh
+<span class="c-cmd">sudo</span> AGENT=uran    bash install/install.sh</code></pre></div>
+      <p class="plain">Каждая идёт пару минут. В конце — «Агент … установлен».</p>
+      <details class="help"><summary>Что такое sudo и install.sh?</summary><div class="body">
+        <b>sudo</b> — «выполнить с правами администратора» (нужно для установки программ).
+        <b>install.sh</b> — готовый скрипт-установщик из репозитория: он сам ставит движок,
+        создаёт бота, настраивает папки. Тебе ничего вручную делать не нужно.</div></details>
+      <details class="help"><summary>Это безопасно?</summary><div class="body">
+        Да. Скрипт ставит только нужное (Node.js, Claude Code), не трогает твои личные данные
+        и ничего не удаляет. Весь его код открыт в репозитории — можно посмотреть.</div></details>
     </section>
 
-    <section class="step" id="s3">
-      <div class="step-head"><div class="step-num">3</div><h2>Поставить URAN (исполнитель)</h2></div>
-      <p class="lead">То же самое для второго бота:</p>
-      <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
-<pre><code><span class="c-cmd">sudo</span> AGENT=uran bash install/install.sh</code></pre></div>
-    </section>
-
-    <section class="step" id="s4">
-      <div class="step-head"><div class="step-num">4</div><h2>Войти в Claude (по разу на бота)</h2></div>
-      <p class="lead">Каждый бот логинится в твою подписку Anthropic. Вводи команды по одной:</p>
+    <section class="step">
+      <div class="step-head"><div class="step-num">3</div><h2>Войти в Claude (по разу на бота)</h2></div>
       <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
 <pre><code><span class="c-cmd">sudo</span> -u jupiter -H bash -lc '/home/jupiter/.local/bin/claude login'
 <span class="c-cmd">sudo</span> -u uran    -H bash -lc '/home/uran/.local/bin/claude login'</code></pre></div>
-      <p class="plain">Появится ссылка — открой её в браузере, подтверди вход, скопируй код обратно в терминал. Сделай так для обоих.</p>
+      <p class="plain">Появится ссылка — открой в браузере, подтверди, скопируй код обратно. Сделай для обоих.</p>
     </section>
 
-    <section class="step" id="s5">
-      <div class="step-head"><div class="step-num">5</div><h2>Связать оператора и исполнителя</h2></div>
+    <section class="step">
+      <div class="step-head"><div class="step-num">4</div><h2>Связать оператора и исполнителя</h2></div>
       <p class="lead">Чтобы JUPITER мог поручать задачи URAN:</p>
       <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
 <pre><code><span class="c-cmd">sudo</span> bash install/link-agents.sh</code></pre></div>
     </section>
 
-    <section class="step" id="s6">
-      <div class="step-head"><div class="step-num">6</div><h2>Подключить Telegram-ботов</h2></div>
-      <p class="lead">1. В <a href="https://t.me/BotFather">@BotFather</a> командой <span class="inline">/newbot</span> создай <b>два</b> бота — получишь два токена.<br>
+    <section class="step">
+      <div class="step-head"><div class="step-num">5</div><h2>Подключить Telegram-ботов</h2></div>
+      <p class="lead">1. В <a href="https://t.me/BotFather">@BotFather</a> командой <span class="inline">/newbot</span> создай <b>два</b> бота → получишь два токена.<br>
          2. У <a href="https://t.me/userinfobot">@userinfobot</a> узнай свой <b>Telegram ID</b> (число).<br>
          3. Установи «мост» каждому боту:</p>
       <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
 <pre><code><span class="c-cmd">sudo</span> AGENT=jupiter bash install/telegram-install.sh
 <span class="c-cmd">sudo</span> AGENT=uran    bash install/telegram-install.sh</code></pre></div>
-      <p class="lead">4. Впиши токен и свой ID (откроется простой редактор; вставь значения, сохрани <b>Ctrl+O, Enter</b>, выйди <b>Ctrl+X</b>):</p>
+      <p class="lead">4. Впиши токен и ID (редактор nano: вставь значения → сохрани <b>Ctrl+O, Enter</b> → выйди <b>Ctrl+X</b>):</p>
       <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
 <pre><code><span class="c-cmd">sudo</span> -u jupiter nano /home/jupiter/.config/jupiter/telegram.env
 <span class="c-cmd">sudo</span> -u uran    nano /home/uran/.config/uran/telegram.env</code></pre></div>
-      <p class="plain">Внутри файла заполни две строки: <span class="inline">TELEGRAM_BOT_TOKEN=</span> (токен бота) и <span class="inline">TELEGRAM_ALLOWED_IDS=</span> (твой ID).</p>
+      <p class="plain">Две строки: <span class="inline">TELEGRAM_BOT_TOKEN=</span> (токен) и <span class="inline">TELEGRAM_ALLOWED_IDS=</span> (твой ID).</p>
       <p class="lead">5. Запусти ботов:</p>
       <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
 <pre><code><span class="c-cmd">sudo</span> systemctl enable --now tg-jupiter
 <span class="c-cmd">sudo</span> systemctl enable --now tg-uran</code></pre></div>
-      <div class="callout err"><span class="ic">🔒</span><p>Токен — это пароль бота. Никому не показывай, не пересылай в чаты, не выкладывай в интернет.</p></div>
+      <div class="callout err"><span class="ic">🔒</span><p>Токен — это пароль бота. Никому не показывай, не пересылай в чаты.</p></div>
+      <details class="help"><summary>Где взять токен бота?</summary><div class="body">
+        Напиши <a href="https://t.me/BotFather">@BotFather</a> в Telegram команду <span class="inline">/newbot</span>,
+        придумай имя и ник бота — он пришлёт длинную строку вида <span class="inline">123456:AAE...</span>.
+        Это и есть <b>токен</b>. Создай так двух ботов — для JUPITER и для URAN.</div></details>
+      <details class="help"><summary>Что такое Telegram ID и где его взять?</summary><div class="body">
+        Это твой личный номер в Telegram (число). Напиши <a href="https://t.me/userinfobot">@userinfobot</a> —
+        он пришлёт твой <span class="inline">Id</span>. Нужен, чтобы бот отвечал только тебе.</div></details>
+      <details class="help"><summary>Как пользоваться редактором nano?</summary><div class="body">
+        <span class="inline">nano</span> — простой текстовый редактор прямо в терминале.
+        Стрелками подведи курсор к нужной строке, впиши значение после <span class="inline">=</span>.
+        Сохранить: <b>Ctrl+O</b>, затем <b>Enter</b>. Выйти: <b>Ctrl+X</b>.</div></details>
     </section>
 
-    <section class="step" id="s7">
-      <div class="step-head"><div class="step-num">7</div><h2>Проверка</h2></div>
-      <p class="lead">Открой Telegram, найди своего бота JUPITER, напиши ему <span class="inline">/start</span>, потом любую задачу. Он ответит «🔄 Принял задачу, работаю…», покажет «печатает…», пришлёт результат и «✅ Готово».</p>
-      <div class="callout tip"><span class="ic">📎</span><p>Если бот сделал файл (например HTML или отчёт) — он <b>пришлёт его прямо в чат документом</b>. Можно сразу пересылать.</p></div>
+    <section class="step">
+      <div class="step-head"><div class="step-num">6</div><h2>Проверка</h2></div>
+      <p class="lead">В Telegram найди бота JUPITER, напиши <span class="inline">/start</span>, потом задачу. Ответит «🔄 Принял…», покажет «печатает…», пришлёт результат и «✅ Готово». Файлы пришлёт документом прямо в чат.</p>
     </section>
 
-    <section class="step" id="after">
-      <div class="step-head"><div class="step-num">∞</div><h2>Дальше — с любого устройства</h2></div>
-      <p class="lead">Всё управление — из Telegram, с телефона или ноута, откуда угодно. Сервер один, устройств сколько хочешь.</p>
-      <p class="plain">Обновить ботов (когда в репозитории что-то улучшат):</p>
+    <section class="step">
+      <div class="step-head"><div class="step-num">∞</div><h2>Обновление</h2></div>
       <div class="code"><div class="bar"><span class="lbl">терминал</span><button class="copy">копировать</button></div>
 <pre><code><span class="c-cmd">sudo</span> jupiter-update
 <span class="c-cmd">sudo</span> uran-update</code></pre></div>
     </section>
+  </div>
 
-    <section class="step" id="trouble">
-      <div class="step-head"><div class="step-num">🛟</div><h2>Если что-то не так</h2></div>
+  <!-- ============== MAC ============== -->
+  <div class="pane" id="pane-mac">
+    <section class="step">
+      <div class="step-head"><div class="step-num">✓</div><h2>Что нужно</h2></div>
       <table>
-        <tr><th>Симптом</th><th>Что сделать</th></tr>
-        <tr><td>Бот не отвечает</td><td>Напиши ему <span class="inline">/start</span>. Не помогло — на сервере: <span class="inline">sudo systemctl restart tg-jupiter</span></td></tr>
-        <tr><td>«Ошибка агента» на каждое сообщение</td><td>Бот не залогинен — повтори Шаг 4, затем перезапусти: <span class="inline">sudo systemctl restart tg-jupiter</span></td></tr>
-        <tr><td>Бот «молчит» / ничего не делает</td><td>Для URAN включи полную автономию: в его <span class="inline">telegram.env</span> впиши <span class="inline">CLAUDE_PERMISSION_ARGS=--dangerously-skip-permissions</span> и перезапусти</td></tr>
-        <tr><td>Файл не прислал</td><td>Попроси «сохрани и пришли файл». Логи: <span class="inline">sudo journalctl -u tg-jupiter -n 40</span></td></tr>
+        <tr><th>Что</th><th>Зачем</th></tr>
+        <tr><td><b>Mac</b> (macOS)</td><td>агент работает локально</td></tr>
+        <tr><td>Подписка <b>Anthropic</b> (Claude Pro / Max)</td><td>мозги агента</td></tr>
+        <tr><td>Приложение <b>«Терминал»</b> (встроено в macOS)</td><td>вводить команды</td></tr>
       </table>
-      <p class="plain">Полная инструкция в репозитории: <span class="inline">docs/SETUP-DAY-1.md</span>.</p>
+      <div class="callout warn"><span class="ic">💡</span><p>На Mac агент работает, <b>пока компьютер включён</b>. Нужны боты 24/7 в Telegram — выбери вкладку «На сервере (VPS)».</p></div>
     </section>
 
-    <footer>
-      © Wayan Onchain · <a href="https://t.me/wayan_onchain">@wayan_onchain</a> · 2026<br>
-      Репозиторий: <a href="https://github.com/wayanonchain/Claude">github.com/wayanonchain/Claude</a>
-    </footer>
-  </main>
-</div>
+    <section class="step">
+      <div class="step-head"><div class="step-num">1</div><h2>Установить Claude Code</h2></div>
+      <p class="lead">Открой «Терминал» (Cmd+Space → набери «Терминал»). Вставь:</p>
+      <div class="code"><div class="bar"><span class="lbl">Терминал (Mac)</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">curl</span> -fsSL https://claude.ai/install.sh | bash</code></pre></div>
+      <p class="plain">Если попросит установить «Command Line Tools» — согласись (кнопка Install). После установки закрой и открой Терминал заново.</p>
+      <details class="help"><summary>Что такое Терминал на Mac?</summary><div class="body">
+        Это встроенное приложение, куда вводят текстовые команды. Открыть: <b>Cmd+Space</b> →
+        набери «Терминал» → Enter. Команды отсюда копируешь кнопкой «копировать» и вставляешь
+        туда (Cmd+V), затем Enter.</div></details>
+      <details class="help"><summary>Что такое «Command Line Tools»?</summary><div class="body">
+        Это бесплатный набор инструментов от Apple (включает <span class="inline">git</span>).
+        macOS сам предложит их поставить при первой надобности — просто нажми <b>Install</b>.</div></details>
+    </section>
+
+    <section class="step">
+      <div class="step-head"><div class="step-num">2</div><h2>Войти в Claude</h2></div>
+      <div class="code"><div class="bar"><span class="lbl">Терминал (Mac)</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">claude</span></code></pre></div>
+      <p class="plain">Откроется вход через браузер — подтверди. Потом набери <span class="inline">/exit</span>, чтобы выйти.</p>
+    </section>
+
+    <section class="step">
+      <div class="step-head"><div class="step-num">3</div><h2>Скачать репозиторий</h2></div>
+      <div class="code"><div class="bar"><span class="lbl">Терминал (Mac)</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">git</span> clone https://github.com/wayanonchain/Claude.git ~/Claude</code></pre></div>
+      <p class="plain">Если <span class="inline">git</span> не найден — Mac сам предложит поставить «Command Line Tools», согласись и повтори.</p>
+    </section>
+
+    <section class="step">
+      <div class="step-head"><div class="step-num">4</div><h2>Создать агента JUPITER</h2></div>
+      <p class="lead">Заводим рабочую папку и кладём в неё роль оператора:</p>
+      <div class="code"><div class="bar"><span class="lbl">Терминал (Mac)</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">mkdir</span> -p ~/jupiter/.claude
+<span class="c-cmd">cp</span> ~/Claude/templates/jupiter.md ~/jupiter/.claude/CLAUDE.md
+<span class="c-cmd">cp</span> -r ~/Claude/skills ~/jupiter/.claude/skills</code></pre></div>
+    </section>
+
+    <section class="step">
+      <div class="step-head"><div class="step-num">5</div><h2>Запустить и настроить</h2></div>
+      <div class="code"><div class="bar"><span class="lbl">Терминал (Mac)</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">cd</span> ~/jupiter
+<span class="c-cmd">claude</span></code></pre></div>
+      <p class="plain">Внутри чата набери <span class="inline">/onboarding</span> — агент сам расспросит тебя и заполнит профиль за 5–10 минут. Готово, можешь давать задачи прямо в терминале.</p>
+    </section>
+
+    <section class="step">
+      <div class="step-head"><div class="step-num">6</div><h2>Второй агент URAN (по желанию)</h2></div>
+      <p class="lead">Повтори то же во второй папке с ролью исполнителя:</p>
+      <div class="code"><div class="bar"><span class="lbl">Терминал (Mac)</span><button class="copy">копировать</button></div>
+<pre><code><span class="c-cmd">mkdir</span> -p ~/uran/.claude
+<span class="c-cmd">cp</span> ~/Claude/templates/uran.md ~/uran/.claude/CLAUDE.md
+<span class="c-cmd">cp</span> -r ~/Claude/skills ~/uran/.claude/skills
+<span class="c-cmd">cd</span> ~/uran && <span class="c-cmd">claude</span></code></pre></div>
+      <p class="plain">Открой второе окно Терминала для URAN. Так оператор и исполнитель работают параллельно.</p>
+      <div class="callout tip"><span class="ic">📱</span><p>Telegram-боты 24/7 и автосвязка JUPITER→URAN — это про сервер. На Mac удобно работать прямо в терминале. Захочешь круглосуточно — переходи на вкладку VPS.</p></div>
+    </section>
+  </div>
+
+  <!-- ОБЩЕЕ -->
+  <section class="step" id="trouble">
+    <div class="step-head"><div class="step-num">🛟</div><h2>Если что-то не так</h2></div>
+    <table>
+      <tr><th>Симптом</th><th>Что сделать</th></tr>
+      <tr><td>Бот не отвечает (VPS)</td><td>Напиши <span class="inline">/start</span>. Не помогло: <span class="inline">sudo systemctl restart tg-jupiter</span></td></tr>
+      <tr><td>«Ошибка агента» на каждое сообщение</td><td>Бот не залогинен — повтори вход (login), затем перезапусти сервис</td></tr>
+      <tr><td>Бот «молчит» / не выполняет</td><td>Для URAN в <span class="inline">telegram.env</span>: <span class="inline">CLAUDE_PERMISSION_ARGS=--dangerously-skip-permissions</span> и перезапусти</td></tr>
+      <tr><td><span class="inline">command not found: claude</span> (Mac)</td><td>Закрой и открой Терминал заново (обновится PATH)</td></tr>
+      <tr><td>Файл не прислал</td><td>Попроси «сохрани и пришли файл». Логи (VPS): <span class="inline">sudo journalctl -u tg-jupiter -n 40</span></td></tr>
+    </table>
+    <p class="plain">Полная текстовая инструкция в репозитории: <span class="inline">docs/SETUP-DAY-1.md</span>.</p>
+  </section>
+
+  <footer>
+    © Wayan Onchain · <a href="https://t.me/wayan_onchain">@wayan_onchain</a> · 2026<br>
+    Репозиторий: <a href="https://github.com/wayanonchain/Claude">github.com/wayanonchain/Claude</a>
+  </footer>
+</main></div>
 
 <script>
-  // прогресс-бар
   const prog=document.getElementById('prog');
-  addEventListener('scroll',()=>{const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;prog.style.width=p+'%';});
-  // тема
+  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
   const tb=document.getElementById('theme');
-  tb.onclick=()=>{const r=document.documentElement;r.dataset.theme=r.dataset.theme==='light'?'':'light';};
-  // copy
+  tb.onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme!=='dark';r.dataset.theme=dark?'dark':'';tb.textContent=dark?'☀️ Светлая':'🌙 Тёмная';};
+  document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('pane-'+t.dataset.pane).classList.add('active');
+    window.scrollTo({top:document.querySelector('.tabs').offsetTop-60,behavior:'smooth'});
+  };});
   document.querySelectorAll('.copy').forEach(b=>{b.onclick=()=>{
     const code=b.closest('.code').querySelector('code').innerText;
     navigator.clipboard.writeText(code).then(()=>{const t=b.textContent;b.textContent='✓ скопировано';setTimeout(()=>b.textContent=t,1400);});
   };});
-  // scroll-spy
-  const links=[...document.querySelectorAll('nav.side a')];
-  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
-  addEventListener('scroll',()=>{let i=secs.length-1;for(let k=0;k<secs.length;k++){if(secs[k]&&secs[k].getBoundingClientRect().top<120)i=k;}links.forEach(a=>a.classList.remove('active'));if(links[i])links[i].classList.add('active');});
 </script>
 </body>
 </html>
