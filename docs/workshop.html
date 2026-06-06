@@ -78,8 +78,17 @@
   details.help[open] summary::before{content:"✕";font-size:12px}
   details.help .body{padding:0 14px 13px;color:var(--muted);font-size:14.5px}
   details.help .body b{color:var(--text)}
+  .top .right{display:flex;gap:8px;align-items:center}
+  .socials{display:flex;gap:7px;align-items:center}
+  .socials a{display:inline-flex;align-items:center;justify-content:center;width:33px;height:33px;
+    border:1px solid var(--line);border-radius:9px;text-decoration:none;font-size:15px;color:var(--text);background:var(--card)}
+  .socials a:hover{border-color:var(--accent);transform:translateY(-1px)}
   footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:14px;text-align:center}
   footer a{color:var(--accent)}
+  .footer-socials{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:16px 0 6px}
+  .footer-socials a{color:var(--text);text-decoration:none;font-size:14px;display:inline-flex;gap:6px;align-items:center}
+  .footer-socials a:hover{color:var(--accent)}
+  @media(max-width:680px){.socials a{width:30px;height:30px}}
   @media(max-width:680px){.hero h1{font-size:30px}.agents{grid-template-columns:1fr}.tabs{flex-direction:column}}
 </style>
 </head>
@@ -89,7 +98,16 @@
 <header class="top">
   <div class="wrap">
     <div class="brand">Wayan <b>Onchain</b> · День 1</div>
-    <button class="tbtn" id="theme">🌙 Тёмная</button>
+    <div class="right">
+      <div class="socials">
+        <a href="https://t.me/wayan_onchain" target="_blank" rel="noopener" title="Telegram">✈️</a>
+        <a href="https://x.com/wayan_onchain" target="_blank" rel="noopener" title="X">𝕏</a>
+        <a href="https://www.instagram.com/wayan_onchain" target="_blank" rel="noopener" title="Instagram">📸</a>
+        <a href="https://www.youtube.com/@Wayan_onchain" target="_blank" rel="noopener" title="YouTube">▶️</a>
+        <a href="https://www.tiktok.com/@wayan.onchain" target="_blank" rel="noopener" title="TikTok">🎵</a>
+      </div>
+      <button class="tbtn" id="theme">🌙 Тёмная</button>
+    </div>
   </div>
 </header>
 
@@ -338,6 +356,13 @@
   </section>
 
   <footer>
+    <div class="footer-socials">
+      <a href="https://t.me/wayan_onchain" target="_blank" rel="noopener">✈️ Telegram</a>
+      <a href="https://x.com/wayan_onchain" target="_blank" rel="noopener">𝕏 X</a>
+      <a href="https://www.instagram.com/wayan_onchain" target="_blank" rel="noopener">📸 Instagram</a>
+      <a href="https://www.youtube.com/@Wayan_onchain" target="_blank" rel="noopener">▶️ YouTube</a>
+      <a href="https://www.tiktok.com/@wayan.onchain" target="_blank" rel="noopener">🎵 TikTok</a>
+    </div>
     © Wayan Onchain · <a href="https://t.me/wayan_onchain">@wayan_onchain</a> · 2026<br>
     Репозиторий: <a href="https://github.com/wayanonchain/Claude">github.com/wayanonchain/Claude</a>
   </footer>
