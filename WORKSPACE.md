@@ -1,7 +1,6 @@
 # Рабочий CLAUDE.md -- должностная инструкция одного агента
 
-> **Курс:** wayan-claude-md | **Автор:** Wayan Onchain (@wayan_onchain) | **Трек:** универсально
-> Не-разработчикам -- параллельно открой [WORKSPACE-NONTECH.md](WORKSPACE-NONTECH.md).
+> **Проект:** Wayan | **Автор:** Wayan Onchain (@wayan_onchain) | **Применимость:** универсально
 
 Рабочий CLAUDE.md (`.claude/CLAUDE.md` в директории конкретного workspace) -- это
 должностная инструкция одного агента. Глобальный CLAUDE.md = конституция для всех,
@@ -10,11 +9,10 @@
 Здесь описывается: кто этот агент, как он себя ведёт, с кем координируется, что
 помнит, и куда эскалирует проблемы.
 
-Все примеры в этом гайде даны на герое-разработчике **Диме**. Курс wayan_onchain
-также вводит двух non-tech героев: **Машу** (SMM-менеджер, CLAUDE PRO) и **Артёма**
-(владелец онлайн-школы, CLAUDE BIZ). Их заполненные CLAUDE.md --
-в [examples/marketer-pro-filled.md](examples/marketer-pro-filled.md) и
-[examples/smb-biz-filled.md](examples/smb-biz-filled.md).
+Примеры в этом гайде даны на операторе-разработчике **Диме** и его двух агентах:
+**JUPITER** (оператор/шлюз) и **URAN** (исполнитель). Их заполненные CLAUDE.md --
+в [examples/jupiter-operator.md](examples/jupiter-operator.md) и
+[examples/uran-executor.md](examples/uran-executor.md).
 
 ---
 
@@ -494,10 +492,9 @@ CLAUDE.md на 500 строк -- это антипаттерн. Разделяй
 
 Примеры: [examples/](examples/)
 
-Альтернативы для non-tech:
-- [WORKSPACE-NONTECH.md](WORKSPACE-NONTECH.md) -- этот гайд без git/деплоя
-- [templates/workspace-pro.md](templates/workspace-pro.md) -- шаблон для контент-агента
-- [templates/workspace-biz.md](templates/workspace-biz.md) -- шаблон для SMB-оркестратора
+См. также:
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) -- двухагентная архитектура
+- [templates/jupiter.md](templates/jupiter.md), [templates/uran.md](templates/uran.md) -- роли
 
 ---
 

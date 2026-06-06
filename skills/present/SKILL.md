@@ -8,7 +8,7 @@ course: wayan-claude-md
 # Present -- HTML Document Generator
 
 > Часть курса [wayan-claude-md](../../README.md) от [Wayan Onchain](https://t.me/wayan_onchain).
-> Трек: универсально (DEV + PRO + BIZ). Для PRO -- презентации клиенту. Для BIZ -- отчёты в HTML.
+> Универсальный скилл: презентации, отчёты, дашборды в HTML для любого агента.
 
 ## When to use
 - User writes `/present` or asks to format something nicely

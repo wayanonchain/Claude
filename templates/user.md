@@ -1,7 +1,6 @@
 # USER.md -- Профиль оператора
 
 <!-- Шаблон курса wayan-claude-md (автор: Wayan Onchain, @wayan_onchain) -->
-<!-- Трек: DEV. Для non-tech используй templates/user-nontech.md -->
 
 **Имя:** {{ИМЯ}}
 **Обращение:** {{КАК_ОБРАЩАТЬСЯ}}

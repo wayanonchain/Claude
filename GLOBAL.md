@@ -1,7 +1,6 @@
 # Глобальный CLAUDE.md -- конституция всех твоих агентов
 
-> **Курс:** wayan-claude-md | **Автор:** Wayan Onchain (@wayan_onchain) | **Трек:** универсально (DEV + PRO + BIZ)
-> Не-разработчикам -- параллельно открой [GLOBAL-NONTECH.md](GLOBAL-NONTECH.md): тот же гайд без git/CI/деплоя.
+> **Проект:** Wayan | **Автор:** Wayan Onchain (@wayan_onchain) | **Применимость:** универсально (оба агента)
 
 Глобальный CLAUDE.md (`~/.claude/CLAUDE.md`) -- файл, который Claude Code загружает
 в контекст **каждой** сессии **каждого** твоего агента. Это конституция: правила,
@@ -299,8 +298,8 @@ Read tool по запросу. Это экономит ещё ~15--20 KB на к
 
 Без скиллов агент работает «в лоб». Со скиллами -- структурированно и предсказуемо.
 
-Курс wayan_onchain добавляет 5 собственных скиллов: `present`, `onboarding`,
-`self-compiler`, `brand-voice` (PRO), `smb-orchestra` (BIZ) -- см. [README.md](README.md).
+Проект добавляет универсальные скиллы: `present`, `onboarding`,
+`self-compiler` -- см. [README.md](README.md).
 
 ---
 
@@ -369,11 +368,10 @@ Read tool по запросу. Это экономит ещё ~15--20 KB на к
 
 Следующий шаг: [Рабочий CLAUDE.md](WORKSPACE.md) -- как настроить конкретного агента.
 
-Альтернативы для non-tech:
-- [GLOBAL-NONTECH.md](GLOBAL-NONTECH.md) -- этот же гайд без git/деплоя/кода
-- [WORKSPACE-NONTECH.md](WORKSPACE-NONTECH.md) -- настройка контент-агента (PRO) или SMB-оркестратора (BIZ)
-- [examples/marketer-pro-filled.md](examples/marketer-pro-filled.md) -- как настроила Маша
-- [examples/smb-biz-filled.md](examples/smb-biz-filled.md) -- как настроил Артём
+См. также:
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) -- двухагентная архитектура JUPITER + URAN
+- [examples/jupiter-operator.md](examples/jupiter-operator.md) -- заполненный оператор
+- [examples/uran-executor.md](examples/uran-executor.md) -- заполненный исполнитель
 
 ---
 

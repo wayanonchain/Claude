@@ -13,7 +13,8 @@ AGENT="$(printf '%s' "$AGENT_RAW" | tr '[:upper:]' '[:lower:]')"
 [[ "$AGENT" =~ ^[a-z][a-z0-9_-]{1,30}$ ]] || { echo "Некорректное имя агента: '$AGENT_RAW'" >&2; exit 1; }
 
 AGENT_HOME="/home/${AGENT}"
-AGENT_WORKSPACE="${AGENT_WORKSPACE:-${AGENT_HOME}/workspace}"
+# Layout EdgeLab: рабочая папка агента в ~/.claude-lab/<agent> (см. install.sh).
+AGENT_WORKSPACE="${AGENT_WORKSPACE:-${AGENT_HOME}/.claude-lab/${AGENT}}"
 CLAUDE_BIN="${CLAUDE_BIN:-${AGENT_HOME}/.local/bin/claude}"
 REPO_DIR="${REPO_DIR:-${AGENT_HOME}/Claude}"
 CONF_DIR="${AGENT_HOME}/.config/${AGENT}"
@@ -23,7 +24,7 @@ BRIDGE_DST="${CONF_DIR}/telegram_bridge.py"
 SERVICE="tg-${AGENT}"
 
 [[ $EUID -eq 0 ]] || { echo "Запусти под root: sudo AGENT=${AGENT} bash install/telegram-install.sh" >&2; exit 1; }
-id -u "$AGENT" >/dev/null 2>&1 || { echo "Пользователь '${AGENT}' не найден. Сначала: sudo AGENT=${AGENT} bash install/agent-install.sh" >&2; exit 1; }
+id -u "$AGENT" >/dev/null 2>&1 || { echo "Пользователь '${AGENT}' не найден. Сначала: sudo AGENT=${AGENT} bash install/install.sh" >&2; exit 1; }
 [[ -x "$CLAUDE_BIN" ]] || { echo "Claude CLI не найден: ${CLAUDE_BIN}" >&2; exit 1; }
 
 SRC_BRIDGE="${REPO_DIR}/tools/telegram_bridge.py"
