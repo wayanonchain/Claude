@@ -146,12 +146,40 @@ _MAX_FILE = 45 * 1024 * 1024  # лимит бота Telegram ~50МБ
 OUTBOX = os.path.join(WORKSPACE, "outbox")
 
 
+# Никогда не отправляем секреты, даже если агент упомянул их путь.
+_SECRET_DIRS = ("/.ssh/", "/.config/", "/.claude/", "/.gnupg/", "/.aws/", "/.local/share/")
+_SECRET_NAMES = {"telegram.env", "telegram-sessions.json", ".credentials.json",
+                 ".claude.json", "id_rsa", "id_ed25519", ".env"}
+_SECRET_EXT = (".env", ".key", ".pem", ".pfx", ".p12", ".crt")
+_SECRET_WORDS = ("credential", "secret", "token", "password", "passwd", "private")
+
+
+def _is_secret(rp):
+    low = rp.lower()
+    name = os.path.basename(low)
+    if any(d in low for d in _SECRET_DIRS):
+        return True
+    if name in _SECRET_NAMES or os.path.basename(rp) in _SECRET_NAMES:
+        return True
+    if low.endswith(_SECRET_EXT):
+        return True
+    if any(w in name for w in _SECRET_WORDS):
+        return True
+    return False
+
+
 def _safe_file(p):
     home = os.path.realpath(os.path.expanduser("~"))
     try:
         rp = os.path.realpath(p)
-        return (os.path.isfile(rp) and rp.startswith(home + os.sep)
-                and 0 < os.path.getsize(rp) <= _MAX_FILE)
+        if not (os.path.isfile(rp) and rp.startswith(home + os.sep)):
+            return False
+        if not (0 < os.path.getsize(rp) <= _MAX_FILE):
+            return False
+        if _is_secret(rp):
+            log(f"ОТКАЗ слать секретный файл: {rp}")
+            return False
+        return True
     except OSError:
         return False
 
